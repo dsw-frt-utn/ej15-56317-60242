@@ -1,4 +1,6 @@
 
+using Dsw2026Ej15.Data;
+
 namespace Dsw2026Ej15.Api
 {
     public class Program
@@ -6,7 +8,7 @@ namespace Dsw2026Ej15.Api
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
+            builder.Services.AddSingleton<IPersistence, PersistenceInMemory>();
             // Add services to the container.
 
             builder.Services.AddControllers();
