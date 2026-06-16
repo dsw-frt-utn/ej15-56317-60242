@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Dsw2026Ej15.Api
 {
     [ApiController]
-    [Route("[api/controller]")]
+    [Route("api/doctors")]
     public class DoctorsController : ControllerBase
     {
         private readonly IPersistence _persistence;
@@ -17,14 +17,14 @@ namespace Dsw2026Ej15.Api
         public IActionResult Create([FromBody] CreateDoctorRequest request)
         {
             if (string.IsNullOrWhiteSpace(request.Name))
-                return BadRequest("Name es requerido");
+                throw new ValidationException("Name es requerido");
 
             if (string.IsNullOrWhiteSpace(request.LicenseNumber))
-                return BadRequest("LicenseNumber es requerido");
+                throw new ValidationException("LicenseNumber es requerido");
 
             var speciality = _persistence.GetSpecialityById(request.SpecialityId);
             if (speciality == null)
-                return BadRequest("SpecialityId no existe");
+                throw new ValidationException("SpecialityId no existe");
 
             var doctor = new Doctor
             {
@@ -44,10 +44,7 @@ namespace Dsw2026Ej15.Api
         [HttpGet]
         public IActionResult GetAll()
         {
-            var doctors = _persistence
-                .GetDoctors()
-                .Where(d => d.IsActive)
-                .ToList();
+            var doctors = _persistence.GetAllActiveDoctors();
 
             return Ok(doctors);
         }
@@ -82,8 +79,7 @@ namespace Dsw2026Ej15.Api
             if (doctor == null || !doctor.IsActive)
                 return NotFound();
 
-            doctor.IsActive = false;
-            _persistence.UpdateDoctor(doctor);
+            _persistence.DeactivateDoctor(id);
 
             return NoContent(); // 204
         }
