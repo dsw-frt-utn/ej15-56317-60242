@@ -1,6 +1,0 @@
-@Dsw2026Ej15.Domain_HostAddress = http://localhost:5171
-
-GET {{Dsw2026Ej15.Domain_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

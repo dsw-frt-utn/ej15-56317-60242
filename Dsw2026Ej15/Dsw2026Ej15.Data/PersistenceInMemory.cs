@@ -1,4 +1,5 @@
-﻿using Dsw2026Ej15.Domain.Dominio;
+﻿using Dsw2026Ej15.Domain;
+using System.Numerics;
 using System.Text.Json;
 
 namespace Dsw2026Ej15.Data
@@ -10,11 +11,8 @@ namespace Dsw2026Ej15.Data
 
         public PersistenceInMemory()
         {
-
             _doctors = new List<Doctor>();
             _specialities = LoadSpecialities();
-
-
         }
 
         private List<Speciality> LoadSpecialities()
@@ -40,9 +38,22 @@ namespace Dsw2026Ej15.Data
             _doctors.Add(doctor);
         }
 
+
+        public void AddSpeciality(Speciality speciality)
+        {
+            speciality.Id = Guid.NewGuid();
+            _specialities.Add(speciality);
+        }
+
+
         public List<Doctor> GetAllActiveDoctors() 
         {
             return _doctors.Where(d  => d.IsActive).ToList();
+        }
+
+        public List<Doctor> GetDoctors()
+        {
+            return _doctors;
         }
 
         public Doctor? GetActiveDoctorById(Guid id)
@@ -59,28 +70,25 @@ namespace Dsw2026Ej15.Data
             }
         }
 
+
+        public void UpdateDoctor(Doctor doctor)
+        {
+            var existing = _doctors.FirstOrDefault(d => d.Id == doctor.Id);
+            if (existing != null)
+            {
+                existing.Name = doctor.Name;
+                existing.LicenseNumber = doctor.LicenseNumber;
+                existing.IsActive = doctor.IsActive;
+                existing.Speciality = doctor.Speciality;
+            }
+        }
+
         public Speciality? GetSpecialityById(Guid id)
         {
             return _specialities.FirstOrDefault(s => s.Id == id);
         }
         
-        
-
-
-
-
-
-
-        
-
-
-
-
-
-
         }
-
-
 
     }
 

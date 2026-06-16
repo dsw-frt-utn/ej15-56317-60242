@@ -1,4 +1,4 @@
-﻿using Dsw2026Ej15.Domain.Dominio;
+﻿using Dsw2026Ej15.Domain;
 
 namespace Dsw2026Ej15.Data
 {

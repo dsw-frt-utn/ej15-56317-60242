@@ -1,4 +1,4 @@
-﻿namespace Dsw2026Ej15.Domain.Dominio
+﻿namespace Dsw2026Ej15.Domain
 {
     public class Doctor : BaseEntity
     {
