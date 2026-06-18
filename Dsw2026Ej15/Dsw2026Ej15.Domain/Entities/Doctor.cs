@@ -4,14 +4,14 @@
     {
         public string Name { get; set; }
         public string LicenseNumber { get; set; }
-        public Task<bool> IsActive { get; set; }
+        public bool IsActive { get; set; }
         public Speciality Speciality { get; set; }
 
-        public Doctor(string name, string licenseNumber, Speciality speciality, Guid? id=null):base(id)
+        public Doctor(string name, string licenseNumber, Speciality speciality, Guid? id = null) : base(id)
         {
             Name = name;
             LicenseNumber = licenseNumber;
-            IsActive = Task.FromResult(true);
+            IsActive = true;
             Speciality = speciality;
         }
     }

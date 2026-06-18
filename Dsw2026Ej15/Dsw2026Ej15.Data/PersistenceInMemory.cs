@@ -43,7 +43,7 @@ namespace Dsw2026Ej15.Data
         public Task AddDoctorAsync(Doctor doctor)
         {
             doctor.Id = Guid.NewGuid();
-            doctor.IsActive = Task.FromResult(true);
+            doctor.IsActive = true;
             _doctors.Add(doctor);
             return Task.CompletedTask;
         }
@@ -59,7 +59,7 @@ namespace Dsw2026Ej15.Data
 
         public Task<List<Doctor>> GetAllActiveDoctorsAsync()
         {
-            return Task.FromResult(_doctors.Where(d => d.IsActive.Result).ToList());
+            return Task.FromResult(_doctors.Where(d => d.IsActive).ToList());
         }
 
         public Task<List<Doctor>> GetDoctorsAsync()
@@ -67,20 +67,19 @@ namespace Dsw2026Ej15.Data
             return Task.FromResult(_doctors);
         }
 
-        public Task<Doctor?> GetActiveDoctorByIdAsync(Guid id)
+        public Doctor? GetActiveDoctorById(Guid id)
         {
-            var doctor = _doctors.FirstOrDefault(d => d.Id == id && d.IsActive.Result);
-            return Task.FromResult(doctor);
+            return _doctors.FirstOrDefault(d => d.Id == id && d.IsActive);
         }
 
-        public Task DeactivateDoctorAsync(Guid id)
+        public void DeactivateDoctor(Guid id)
         {
-            var doctor = GetActiveDoctorByIdAsync(id);
+            var doctor = GetActiveDoctorById(id);
             if (doctor != null)
             {
-                doctor.IsActive = Task.FromResult(false);
+                doctor.IsActive = false;
             }
-            return Task.CompletedTask;
+            //return Task.CompletedTask;
         }
 
 
@@ -105,5 +104,5 @@ namespace Dsw2026Ej15.Data
         
         }
 
-    }
-
+    
+}

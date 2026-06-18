@@ -49,7 +49,7 @@ namespace Dsw2026Ej15.Api.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var doctor = await _persistence.GetActiveDoctorByIdAsync(id);
+            var doctor = _persistence.GetActiveDoctorById(id);
 
             if (doctor == null || !doctor.IsActive)
                 return NotFound();
@@ -60,22 +60,19 @@ namespace Dsw2026Ej15.Api.Controllers
                 doctor.LicenseNumber,
                 SpecialityName = doctor.Speciality?.Name
             };
-
-
             return Ok(response);
-
         }
 
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var doctor = await _persistence.GetActiveDoctorByIdAsync(id);
+            var doctor = _persistence.GetActiveDoctorById(id);
 
             if (doctor == null || !doctor.IsActive)
                 return NotFound();
 
-            await _persistence.DeactivateDoctorAsync(id);
+            _persistence.DeactivateDoctor(id);
 
             return NoContent(); // 204
         }
