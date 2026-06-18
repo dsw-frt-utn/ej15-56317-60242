@@ -1,4 +1,5 @@
-﻿using Dsw2026Ej15.Domain.Entities;
+﻿using Dsw2026Ej15.Domain;
+using Dsw2026Ej15.Domain.Entities;
 using Dsw2026Ej15.Domain.Interfaces;
 using System.Numerics;
 using System.Text.Json;
@@ -30,7 +31,7 @@ namespace Dsw2026Ej15.Data
                     PropertyNameCaseInsensitive = true 
                 }) ?? [];
 
-                _specialities = [.. specialities.Select(s=> new Speciality(s.Name, s.Description, s.Id))];*/
+                _specialities = [.. specialities.Select(s=> new Speciality(s.Name, s.Description, s.Id))];// convierte En los objetos del dominio especiality*/
         }
             catch(Exception ex){
                 Console.WriteLine($"Error al cargar especialidades: {ex.Message}");
@@ -39,47 +40,51 @@ namespace Dsw2026Ej15.Data
 
         }
         
-        public void AddDoctor(Doctor doctor)
+        public Task AddDoctorAsync(Doctor doctor)
         {
             doctor.Id = Guid.NewGuid();
-            doctor.IsActive = true;
+            doctor.IsActive = Task.FromResult(true);
             _doctors.Add(doctor);
+            return Task.CompletedTask;
         }
 
 
-        public void AddSpeciality(Speciality speciality)
+        public Task AddSpecialityAsync(Speciality speciality)
         {
             speciality.Id = Guid.NewGuid();
             _specialities.Add(speciality);
+            return Task.CompletedTask;
         }
 
 
-        public List<Doctor> GetAllActiveDoctors() 
+        public Task<List<Doctor>> GetAllActiveDoctorsAsync()
         {
-            return _doctors.Where(d  => d.IsActive).ToList();
+            return Task.FromResult(_doctors.Where(d => d.IsActive.Result).ToList());
         }
 
-        public List<Doctor> GetDoctors()
+        public Task<List<Doctor>> GetDoctorsAsync()
         {
-            return _doctors;
+            return Task.FromResult(_doctors);
         }
 
-        public Doctor? GetActiveDoctorById(Guid id)
+        public Task<Doctor?> GetActiveDoctorByIdAsync(Guid id)
         {
-            return _doctors.FirstOrDefault(d => d.Id == id && d.IsActive);
+            var doctor = _doctors.FirstOrDefault(d => d.Id == id && d.IsActive.Result);
+            return Task.FromResult(doctor);
         }
 
-        public void DeactivateDoctor(Guid id)
+        public Task DeactivateDoctorAsync(Guid id)
         {
-            var doctor = GetActiveDoctorById(id);
+            var doctor = GetActiveDoctorByIdAsync(id);
             if (doctor != null)
             {
-                doctor.IsActive = false;
+                doctor.IsActive = Task.FromResult(false);
             }
+            return Task.CompletedTask;
         }
 
 
-        public void UpdateDoctor(Doctor doctor)
+        public Task UpdateDoctorAsync(Doctor doctor)
         {
             var existing = _doctors.FirstOrDefault(d => d.Id == doctor.Id);
             if (existing != null)
@@ -89,11 +94,13 @@ namespace Dsw2026Ej15.Data
                 existing.IsActive = doctor.IsActive;
                 existing.Speciality = doctor.Speciality;
             }
+            return Task.CompletedTask;
         }
 
-        public Speciality? GetSpecialityById(Guid id)
+        public Task<Speciality?> GetSpecialityByIdAsync(Guid id)
         {
-            return _specialities.FirstOrDefault(s => s.Id == id);
+            var speciality = _specialities.SingleOrDefault(s => s.Id == id);
+            return Task.FromResult(speciality);
         }
         
         }

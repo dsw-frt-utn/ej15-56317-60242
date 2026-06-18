@@ -1,4 +1,6 @@
+using Dsw2026Ej15.Api.Models;
 using Dsw2026Ej15.Domain;
+using Dsw2026Ej15.Domain.Entities;
 using Dsw2026Ej15.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,7 +17,7 @@ namespace Dsw2026Ej15.Api.Controllers
         }
 
         [HttpPost]//[HttpPost("doctors")]
-        public async Task<IActionResult> Create([FromBody] CreateDoctorRequest request)
+        public async Task<IActionResult> Create([FromBody] DoctorModel.Request request)
         {
             if (string.IsNullOrWhiteSpace(request.Name))
                 throw new ValidationException("Nombre es requerido"); //es un regla de negocio
@@ -27,15 +29,8 @@ namespace Dsw2026Ej15.Api.Controllers
             if (speciality == null)
                 throw new ValidationException("Especialidad no existe");
 
-            var doctor = new Doctor
-            {
-                Id = Guid.NewGuid(),
-                Name = request.Name,
-                LicenseNumber = request.LicenseNumber,
-                Speciality = speciality,
-                IsActive = true
-            };
-
+            var doctor = new Doctor(request.Name, request.LicenseNumber, speciality);
+             
             await _persistence.AddDoctorAsync(doctor);
 
             return Created();// StatusCode(201);
