@@ -1,10 +1,11 @@
 using Dsw2026Ej15.Domain;
+using Dsw2026Ej15.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Dsw2026Ej15.Api
+namespace Dsw2026Ej15.Api.Controllers
 {
     [ApiController]
-    [Route("api/doctors")]
+    [Route("api/doctors")]// [Route("api")]
     public class DoctorsController : ControllerBase
     {
         private readonly IPersistence _persistence;
@@ -13,18 +14,18 @@ namespace Dsw2026Ej15.Api
             _persistence = persistence;
         }
 
-        [HttpPost]
-        public IActionResult Create([FromBody] CreateDoctorRequest request)
+        [HttpPost]//[HttpPost("doctors")]
+        public async Task<IActionResult> Create([FromBody] CreateDoctorRequest request)
         {
             if (string.IsNullOrWhiteSpace(request.Name))
-                throw new ValidationException("Name es requerido");
+                throw new ValidationException("Nombre es requerido"); //es un regla de negocio
 
             if (string.IsNullOrWhiteSpace(request.LicenseNumber))
-                throw new ValidationException("LicenseNumber es requerido");
+                return BadRequest("Matricula es requerido");//throw new ValidationException("Numero de licencia es requerido");
 
-            var speciality = _persistence.GetSpecialityById(request.SpecialityId);
+            var speciality = await _persistence.GetSpecialityByIdAsync(request.SpecialityId);
             if (speciality == null)
-                throw new ValidationException("SpecialityId no existe");
+                throw new ValidationException("Especialidad no existe");
 
             var doctor = new Doctor
             {
@@ -35,25 +36,25 @@ namespace Dsw2026Ej15.Api
                 IsActive = true
             };
 
-            _persistence.AddDoctor(doctor);
+            await _persistence.AddDoctorAsync(doctor);
 
-            return StatusCode(201);
+            return Created();// StatusCode(201);
         }
 
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var doctors = _persistence.GetAllActiveDoctors();
+            var doctors = await _persistence.GetAllActiveDoctorsAsync();
 
             return Ok(doctors);
         }
 
 
         [HttpGet("{id}")]
-        public IActionResult GetById(Guid id)
+        public async Task<IActionResult> GetById(Guid id)
         {
-            var doctor = _persistence.GetActiveDoctorById(id);
+            var doctor = await _persistence.GetActiveDoctorByIdAsync(id);
 
             if (doctor == null || !doctor.IsActive)
                 return NotFound();
@@ -72,14 +73,14 @@ namespace Dsw2026Ej15.Api
 
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            var doctor = _persistence.GetActiveDoctorById(id);
+            var doctor = await _persistence.GetActiveDoctorByIdAsync(id);
 
             if (doctor == null || !doctor.IsActive)
                 return NotFound();
 
-            _persistence.DeactivateDoctor(id);
+            await _persistence.DeactivateDoctorAsync(id);
 
             return NoContent(); // 204
         }

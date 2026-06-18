@@ -1,6 +1,6 @@
 ﻿namespace Dsw2026Ej15.Api
 {
-    public class CreateDoctorRequest
+    internal record CreateDoctorRequest
     {
         public string Name { get; set; }
         public string LicenseNumber { get; set; }

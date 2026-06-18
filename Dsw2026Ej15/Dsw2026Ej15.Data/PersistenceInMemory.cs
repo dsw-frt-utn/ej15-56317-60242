@@ -1,4 +1,5 @@
-﻿using Dsw2026Ej15.Domain;
+﻿using Dsw2026Ej15.Domain.Entities;
+using Dsw2026Ej15.Domain.Interfaces;
 using System.Numerics;
 using System.Text.Json;
 
@@ -6,23 +7,30 @@ namespace Dsw2026Ej15.Data
 {
     public class PersistenceInMemory : IPersistence
     {
-        private readonly List<Doctor> _doctors;
-        private readonly List<Speciality> _specialities;
+        private readonly List<Doctor> _doctors = [];
+        private readonly List<Speciality> _specialities = [];
 
         public PersistenceInMemory()
         {
-            _doctors = new List<Doctor>();
-            _specialities = LoadSpecialities();
+            //_doctors = new List<Doctor>();
+            //_specialities = LoadSpecialities();
+            LoadSpecialities();
         }
 
         private List<Speciality> LoadSpecialities()
         {
         try{
-                string json = File.ReadAllText("specialities.json");
+                string jsonPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Sources","specialities.json");
+                string json = File.ReadAllText(jsonPath);
 
-                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-                return JsonSerializer.Deserialize<List<Speciality>>(json, options) ?? new List<Speciality>();
+                 var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                  return JsonSerializer.Deserialize<List<Speciality>>(json, options) ?? new List<Speciality>();
 
+                /* var specialities =  JsonSerializer.Deserialize<List<Speciality>>(json,new JsonSerializerOptions() { 
+                    PropertyNameCaseInsensitive = true 
+                }) ?? [];
+
+                _specialities = [.. specialities.Select(s=> new Speciality(s.Name, s.Description, s.Id))];*/
         }
             catch(Exception ex){
                 Console.WriteLine($"Error al cargar especialidades: {ex.Message}");

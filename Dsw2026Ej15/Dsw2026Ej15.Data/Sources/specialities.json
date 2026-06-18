@@ -1,0 +1,28 @@
+﻿[
+  {
+    "Name": "Cardiología",
+    "Description": "Especialista en enfermedades del corazón",
+    "Id": "1"
+  },
+  {
+    "Name": "Neurología",
+    "Description": "Especialista en trastornos del sistema nervioso",
+    "Id": "2"
+  }
+  {
+    "Name": "Pediatría",
+    "Description": "Especialista en el cuidado de niños",
+    "Id": "3"
+  }
+
+  {
+    "Name": "Dermatología",
+    "Description": "Especialista en enfermedades de la piel",
+    "Id": "4"
+  }
+  {
+  "Name": "Gastroenterología",
+    "Description": "Especialista en enfermedades del sistema digestivo",
+    "Id": "5"
+  }
+]
