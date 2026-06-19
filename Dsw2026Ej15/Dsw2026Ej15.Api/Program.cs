@@ -14,8 +14,7 @@ namespace Dsw2026Ej15.Api
             builder.Services.AddControllers();
             builder.Services.AddSwaggerGen();
             builder.Services.AddSingleton<IPersistence, PersistenceInMemory>();
-            // Add services to the container.
-
+            builder.Services.AddHealthChecks();
             var app = builder.Build();
 
 

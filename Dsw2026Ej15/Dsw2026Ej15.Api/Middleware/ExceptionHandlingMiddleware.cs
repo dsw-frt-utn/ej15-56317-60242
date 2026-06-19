@@ -1,4 +1,8 @@
-﻿using System.Runtime.CompilerServices;
+﻿using Dsw2026Ej15.Domain;
+using System.Net;
+using System.Runtime.CompilerServices;
+using System.Text.Json;
+using Dsw2026Ej15.Api.Middleware;
 
 namespace Dsw2026Ej15.Api.Middleware
 {
@@ -10,31 +14,36 @@ namespace Dsw2026Ej15.Api.Middleware
         {
             _next = next;
         }
-        public async Task Invoke(HttpContext context) {
+        public async Task InvokeAsync(HttpContext context) {
             try
             {
                 await _next(context);
 
             }
-            catch (ValidationException ex)
-            {
-                context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                context.Response.ContentType = "application/json";
-                var errorResponse = new { error = ex.Message };
-                context.Response.WriteAsJsonAsync(errorResponse);
-            }
             catch (Exception ex)
             {
-               
-                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                context.Response.ContentType = "application/json";
-                var errorResponse = new { error = "Ocurrió un error inesperado" };
-                context.Response.WriteAsJsonAsync(errorResponse);
-            }
-            catch 
-            { 
-                await HandleExceptionAsync(context,ex);
+                await HandleExceptionAsync(context, ex);
             }
 
-            private async Task HandleExceptionAsync 
+        }
+
+        private async Task HandleExceptionAsync(HttpContext context, Exception ex)
+        {
+            
+            HttpStatusCode status = HttpStatusCode.InternalServerError;
+            string message = "Ocurrio un error inesperaado al ejecutar la solicitud";
+            if (ex is ValidationException ve)
+            {
+                status = HttpStatusCode.BadRequest;
+                message = ve.Message;
+            }
+            var result = JsonSerializer.Serialize(new { error = message });
+            context.Response.ContentType = "application/json";
+            context.Response.StatusCode = (int)status;
+            await context.Response.WriteAsync(result);
+        }
+    }
+
+    
 }
+
