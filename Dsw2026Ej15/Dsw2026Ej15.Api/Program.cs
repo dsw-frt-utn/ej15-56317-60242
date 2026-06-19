@@ -1,4 +1,5 @@
 
+using Dsw2026Ej15.Api.Middleware;
 using Dsw2026Ej15.Data;
 using Dsw2026Ej15.Domain.Interfaces;
 
@@ -25,10 +26,12 @@ namespace Dsw2026Ej15.Api
                 app.UseSwaggerUI();
             }
 
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
             app.UseAuthorization();
 
 
             app.MapControllers();
+            app.MapHealthChecks("/health-check");//para saber si la api funciona correctamente
 
             app.Run();
         }

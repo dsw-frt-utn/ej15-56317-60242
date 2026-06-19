@@ -27,7 +27,8 @@ namespace Dsw2026Ej15.Data
                  var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                   return JsonSerializer.Deserialize<List<Speciality>>(json, options) ?? new List<Speciality>();
 
-                /* var specialities =  JsonSerializer.Deserialize<List<Speciality>>(json,new JsonSerializerOptions() { 
+                /* 
+                  var specialities =  JsonSerializer.Deserialize<List<Speciality>>(json,new JsonSerializerOptions() { 
                     PropertyNameCaseInsensitive = true 
                 }) ?? [];
 

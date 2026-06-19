@@ -23,7 +23,7 @@ namespace Dsw2026Ej15.Api.Controllers
                 throw new ValidationException("Nombre es requerido"); //es un regla de negocio
 
             if (string.IsNullOrWhiteSpace(request.LicenseNumber))
-                return BadRequest("Matricula es requerido");//throw new ValidationException("Numero de licencia es requerido");
+                throw new ValidationException("Matricula es requerido"); //return BadRequest("Matricula es requerido")//("Numero de licencia es requerido");
 
             var speciality = await _persistence.GetSpecialityByIdAsync(request.SpecialityId);
             if (speciality == null)
