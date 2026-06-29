@@ -1,4 +1,6 @@
-﻿using Dsw2026Ej15.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using Dsw2026Ej15.Domain.Entities;
 using Dsw2026Ej15.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -17,45 +19,54 @@ namespace Dsw2026Ej15.Data
 
         public async Task AddDoctorAsync(Doctor doctor)
         {
-            _context.Add(doctor);
+            _context.Doctors.Add(doctor);
             await _context.SaveChangesAsync();
         }
 
-        public Task AddSpecialityAsync(Speciality speciality)
+        public async Task AddSpecialityAsync(Speciality speciality)
         {
-            throw new NotImplementedException();
+            _context.Specialities.Add(speciality);
+            await _context.SaveChangesAsync();
         }
 
-        public void DeactivateDoctor(Guid id)
+        public async Task DeactivateDoctor(Guid id)
         {
-            throw new NotImplementedException();
+            var doctor = await _context.Doctors.FirstOrDefaultAsync(d => d.Id == id);
+
+            if (doctor != null)
+            {
+                doctor.IsActive = false;
+                await _context.SaveChangesAsync();
+            }
         }
 
-        public Doctor? GetActiveDoctorById(Guid id)
+        public async Task<Doctor?> GetActiveDoctorById(Guid id)
         {
-            throw new NotImplementedException();
-            //return await _context.Doctors.FirstOrDefault(d => d.Id == id && d.IsActive);
+            return await _context.Doctors.FirstOrDefaultAsync(d => d.Id == id && d.IsActive);
         }
 
         public async Task<List<Doctor>> GetAllActiveDoctorsAsync() //getAllDoctorsAsync
         {
-            return _context.Doctors
-                .Where(d => d.IsActive);
+            return await _context.Doctors
+                .Where(d => d.IsActive)
+                .ToListAsync();
         }
 
-        public Task<List<Doctor>> GetDoctorsAsync()
+        public async Task<List<Doctor>> GetDoctorsAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Doctors.ToListAsync();
         }
 
-        public Task<Speciality?> GetSpecialityByIdAsync(Guid id)
+        public async Task<Speciality?> GetSpecialityByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            return await _context.Specialities.FirstOrDefaultAsync(s => s.Id == id);
         }
+        
 
-        public Task UpdateDoctorAsync(Doctor doctor)
+        public async Task UpdateDoctorAsync(Doctor doctor)
         {
-            throw new NotImplementedException();
+            _context.Doctors.Update(doctor);     
+            await _context.SaveChangesAsync();
         }
     }
 }

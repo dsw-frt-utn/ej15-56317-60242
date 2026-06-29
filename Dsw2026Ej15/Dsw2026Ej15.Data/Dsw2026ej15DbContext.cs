@@ -1,4 +1,5 @@
-﻿using Dsw2026Ej15.Domain.Entities;
+﻿
+using Dsw2026Ej15.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ namespace Dsw2026Ej15.Data
 {
     public class Dsw2026ej15DbContext : DbContext
     {
-        DbSet<Doctor> Doctors { get; set; }
+        public DbSet<Doctor> Doctors { get; set; }
         public DbSet<Speciality> Specialities { get; set; }
 
         public Dsw2026ej15DbContext(DbContextOptions<Dsw2026ej15DbContext> options) : base(options)
