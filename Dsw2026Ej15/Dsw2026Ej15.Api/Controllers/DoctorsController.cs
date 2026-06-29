@@ -26,7 +26,7 @@ namespace Dsw2026Ej15.Api.Controllers
                 throw new ValidationException("Matricula es requerido"); //return BadRequest("Matricula es requerido")//("Numero de licencia es requerido");
 
             var speciality = await _persistence.GetSpecialityByIdAsync(request.SpecialityId);
-            if (speciality == null)
+            if (speciality is null)
                 throw new ValidationException("Especialidad no existe");
 
             var doctor = new Doctor(request.Name, request.LicenseNumber, speciality);
@@ -42,24 +42,21 @@ namespace Dsw2026Ej15.Api.Controllers
         {
             var doctors = await _persistence.GetAllActiveDoctorsAsync();
 
-            return Ok(doctors);
+            return Ok(doctors.Select(d => new DoctorModel.Response(d.Name,
+                d.LicenseNumber, d.Speciality?.Id)));
         }
 
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var doctor = _persistence.GetActiveDoctorById(id);
+            var doctor =  _persistence.GetActiveDoctorById(id); //await _persistence.GetDoctorByIdAsync(id);
 
-            if (doctor == null || !doctor.IsActive)
-                return NotFound();
+            if (doctor is null || !doctor.IsActive)
+                return NotFound("Medico no encontrado");
 
-            var response = new
-            {
-                doctor.Name,
-                doctor.LicenseNumber,
-                SpecialityName = doctor.Speciality?.Name
-            };
+            var response = new DoctorModel.Response(doctor.Name, doctor.LicenseNumber, doctor.Speciality?.Id);
+            
             return Ok(response);
         }
 
@@ -67,10 +64,10 @@ namespace Dsw2026Ej15.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var doctor = _persistence.GetActiveDoctorById(id);
+            var doctor =  _persistence.GetActiveDoctorById(id); //await _persistence.GetDoctorByIdAsync(id);
 
-            if (doctor == null || !doctor.IsActive)
-                return NotFound();
+            if (doctor is null || !doctor.IsActive)
+                return NotFound("Medico no encontrado");
 
             _persistence.DeactivateDoctor(id);
 

@@ -3,6 +3,6 @@
     public record DoctorModel
     {
        public record Request(string Name, string LicenseNumber, Guid SpecialityId);
-        public record Response();
+        public record Response(string Name, string LicenseNumber, Guid? SpecialityId);
     }
 }
