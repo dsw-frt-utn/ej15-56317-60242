@@ -13,8 +13,6 @@ namespace Dsw2026Ej15.Data
 
         public PersistenceInMemory()
         {
-            //_doctors = new List<Doctor>();
-            //_specialities = LoadSpecialities();
             LoadSpecialities();
         }
 
@@ -70,7 +68,7 @@ namespace Dsw2026Ej15.Data
 
         public Doctor? GetActiveDoctorById(Guid id)
         {
-            return _doctors.FirstOrDefault(d => d.Id == id && d.IsActive);
+            return _doctors.SingleOrDefault(d => d.Id == id && d.IsActive);
         }
 
         public void DeactivateDoctor(Guid id)
@@ -84,23 +82,25 @@ namespace Dsw2026Ej15.Data
         }
 
 
-        public Task UpdateDoctorAsync(Doctor doctor)
+        public async Task UpdateDoctorAsync(Doctor doctor)
         {
-            var existing = _doctors.FirstOrDefault(d => d.Id == doctor.Id);
+           /* var existing = _doctors.FirstOrDefault(d => d.Id == doctor.Id);
             if (existing != null)
             {
                 existing.Name = doctor.Name;
                 existing.LicenseNumber = doctor.LicenseNumber;
                 existing.IsActive = doctor.IsActive;
                 existing.Speciality = doctor.Speciality;
-            }
-            return Task.CompletedTask;
+            }*/
+            //return Task.CompletedTask;
+            _doctors.Remove(doctor);
+            _doctors.Add(doctor);
         }
 
-        public Task<Speciality?> GetSpecialityByIdAsync(Guid id)
+        public async Task<Speciality?> GetSpecialityByIdAsync(Guid id)
         {
             var speciality = _specialities.SingleOrDefault(s => s.Id == id);
-            return Task.FromResult(speciality);
+            return speciality;
         }
         
         }
