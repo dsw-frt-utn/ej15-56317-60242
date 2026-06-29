@@ -13,31 +13,29 @@ namespace Dsw2026Ej15.Data
 
         public PersistenceInMemory()
         {
-            //_doctors = new List<Doctor>();
-            //_specialities = LoadSpecialities();
             LoadSpecialities();
         }
 
         private List<Speciality> LoadSpecialities()
         {
-        try{
-                string jsonPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Sources","specialities.json");
-                string json = File.ReadAllText(jsonPath);
+            try{
+                    string jsonPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Sources","specialities.json");
+                    string json = File.ReadAllText(jsonPath);
 
-                 var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-                  return JsonSerializer.Deserialize<List<Speciality>>(json, options) ?? new List<Speciality>();
+                     var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                      return JsonSerializer.Deserialize<List<Speciality>>(json, options) ?? new List<Speciality>();
 
-                /* 
-                  var specialities =  JsonSerializer.Deserialize<List<Speciality>>(json,new JsonSerializerOptions() { 
-                    PropertyNameCaseInsensitive = true 
-                }) ?? [];
+                    /* 
+                      var specialities =  JsonSerializer.Deserialize<List<Speciality>>(json,new JsonSerializerOptions() { 
+                        PropertyNameCaseInsensitive = true 
+                    }) ?? [];
 
-                _specialities = [.. specialities.Select(s=> new Speciality(s.Name, s.Description, s.Id))];// convierte En los objetos del dominio especiality*/
-        }
-            catch(Exception ex){
-                Console.WriteLine($"Error al cargar especialidades: {ex.Message}");
-                return new List<Speciality>();
-}
+                    _specialities = [.. specialities.Select(s=> new Speciality(s.Name, s.Description, s.Id))];// convierte En los objetos del dominio especiality*/
+            }
+                catch(Exception ex){
+                    Console.WriteLine($"Error al cargar especialidades: {ex.Message}");
+                        return new List<Speciality>();
+                }
 
         }
         
@@ -68,39 +66,50 @@ namespace Dsw2026Ej15.Data
             return Task.FromResult(_doctors);
         }
 
-        public Doctor? GetActiveDoctorById(Guid id)
+        public async Task<Doctor?> GetActiveDoctorById(Guid id)
         {
-            return _doctors.FirstOrDefault(d => d.Id == id && d.IsActive);
+            return _doctors.SingleOrDefault(d => d.Id == id && d.IsActive);
         }
 
-        public void DeactivateDoctor(Guid id)
+        public async Task DeactivateDoctor(Guid id)
         {
-            var doctor = GetActiveDoctorById(id);
+            var doctor = await GetActiveDoctorById(id);
             if (doctor != null)
             {
                 doctor.IsActive = false;
+            }
+        }
+
+
+        public async Task UpdateDoctorAsync(Doctor doctor)
+        {
+           /* var existing = _doctors.FirstOrDefault(d => d.Id == doctor.Id);
+            if (existing != null)
+            {
             }
             //return Task.CompletedTask;
         }
 
 
-        public Task UpdateDoctorAsync(Doctor doctor)
+        public async Task UpdateDoctorAsync(Doctor doctor)
         {
-            var existing = _doctors.FirstOrDefault(d => d.Id == doctor.Id);
+           /* var existing = _doctors.FirstOrDefault(d => d.Id == doctor.Id);
             if (existing != null)
             {
                 existing.Name = doctor.Name;
                 existing.LicenseNumber = doctor.LicenseNumber;
                 existing.IsActive = doctor.IsActive;
                 existing.Speciality = doctor.Speciality;
-            }
-            return Task.CompletedTask;
+            }*/
+            //return Task.CompletedTask;
+            _doctors.Remove(doctor);
+            _doctors.Add(doctor);
         }
 
-        public Task<Speciality?> GetSpecialityByIdAsync(Guid id)
+        public async Task<Speciality?> GetSpecialityByIdAsync(Guid id)
         {
             var speciality = _specialities.SingleOrDefault(s => s.Id == id);
-            return Task.FromResult(speciality);
+            return speciality;
         }
         
         }
