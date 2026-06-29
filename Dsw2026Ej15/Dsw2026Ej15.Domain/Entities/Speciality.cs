@@ -4,8 +4,6 @@
     {
         public string Name { get; set; } 
         public string Description { get; set; } 
-
-        public Speciality() { }// For EF Core
         public Speciality(string name, string description, Guid? id = null) : base(id)
         {
             Name = name;
