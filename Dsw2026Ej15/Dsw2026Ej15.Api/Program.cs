@@ -15,14 +15,14 @@ namespace Dsw2026Ej15.Api
             var builder = WebApplication.CreateBuilder(args);
 
             var connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Database=Dsw2026Ej15;Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True";
-            
+
 
             builder.Services.AddDbContext<Dsw2026ej15DbContext>(options =>
-            { 
-                options.UseSqlServer(connectionString); 
+            {
+                options.UseSqlServer(connectionString);
             });
-                
-            
+
+
             builder.Services.AddControllers();
             builder.Services.AddSwaggerGen();
             builder.Services.AddScoped<IPersistence, PersistenceEf>();

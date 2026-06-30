@@ -30,7 +30,7 @@ namespace Dsw2026Ej15.Api.Controllers
                 throw new ValidationException("Especialidad no existe");
 
             var doctor = new Doctor(request.Name, request.LicenseNumber, speciality);
-             
+
             await _persistence.AddDoctorAsync(doctor);
 
             return Created();// StatusCode(201);
@@ -50,13 +50,13 @@ namespace Dsw2026Ej15.Api.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var doctor =  _persistence.GetActiveDoctorById(id); //await _persistence.GetDoctorByIdAsync(id);
+            var doctor = await _persistence.GetActiveDoctorById(id);
 
             if (doctor is null || !doctor.IsActive)
                 return NotFound("Medico no encontrado");
 
             var response = new DoctorModel.Response(doctor.Name, doctor.LicenseNumber, doctor.Speciality?.Id);
-            
+
             return Ok(response);
         }
 
@@ -64,7 +64,7 @@ namespace Dsw2026Ej15.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var doctor =  _persistence.GetActiveDoctorById(id); //await _persistence.GetDoctorByIdAsync(id);
+            var doctor = await _persistence.GetActiveDoctorById(id);
 
             if (doctor is null || !doctor.IsActive)
                 return NotFound("Medico no encontrado");
